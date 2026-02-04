@@ -1,0 +1,15 @@
+{
+  "extends": "@gfed-medusa-bff/typescript-config/base.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "declaration": true,
+    "declarationMap": true,
+    "module": "preserve",
+    "moduleResolution": "Bundler",
+    "composite": true,
+    "incremental": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

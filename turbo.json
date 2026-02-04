@@ -1,0 +1,38 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "ui": "tui",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"]
+    },
+    "@gfed-medusa-bff/gateway#dev": {
+      "with": [
+        "@gfed-medusa-bff/products#dev",
+        "@gfed-medusa-bff/orders#dev",
+        "@gfed-medusa-bff/customers#dev",
+        "@gfed-medusa-bff/content#dev"
+      ],
+      "persistent": true
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "generate-schema": {
+      "cache": false,
+      "persistent": false
+    },
+    "publish-schema": {
+      "cache": false,
+      "persistent": false
+    }
+  }
+}

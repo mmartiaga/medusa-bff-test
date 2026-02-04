@@ -1,0 +1,57 @@
+type Query {
+  me: Customer
+  deploymentInfoCustomers: CustomersDeploymentInfo!
+}
+
+type CustomersDeploymentInfo {
+  version: String!
+  environment: String!
+  message: String!
+  deployedAt: DateTime!
+  serviceName: String!
+  region: String!
+}
+
+type Mutation {
+  login(email: String!, password: String!): LoginResponse
+  logout: LogoutResponse
+}
+
+type LoginResponse {
+  token: String
+  isCustomerLoggedIn: Boolean
+}
+
+type LogoutResponse {
+  success: Boolean
+}
+
+type Customer {
+  id: String!
+  email: String
+  defaultBillingAddressId: String
+  defaultShippingAddressId: String
+  companyName: String
+  firstName: String
+  lastName: String
+  addresses: [CustomerAddress]
+  phone: String
+}
+
+type CustomerAddress {
+  id: String!
+  addressName: String
+  isDefaultShipping: Boolean
+  isDefaultBilling: Boolean
+  customerId: String
+  company: String
+  firstName: String
+  lastName: String
+  address1: String
+  address2: String
+  city: String
+  countryCode: String
+  province: String
+  postalCode: String
+  phone: String
+}
