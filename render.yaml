@@ -60,3 +60,60 @@ projects:
               url: traefik/whoami:v1.11
             envVars:
               - fromGroup: bff-prod-env-group
+
+      - name: smoke
+        services:
+          - type: web
+            runtime: image
+            plan: free
+            name: gateway-smoke
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: bff-smoke-env-group
+
+          - type: web
+            runtime: image
+            plan: free
+            name: content-smoke
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: bff-smoke-env-group
+
+          - type: web
+            runtime: image
+            plan: free
+            name: products-smoke
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: bff-smoke-env-group
+
+          - type: web
+            runtime: image
+            plan: free
+            name: orders-smoke
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: bff-smoke-env-group
+
+          - type: web
+            runtime: image
+            plan: free
+            name: customers-smoke
+            region: oregon
+            autoDeployTrigger: off
+            image:
+              url: traefik/whoami:v1.11
+            envVars:
+              - fromGroup: bff-smoke-env-group
