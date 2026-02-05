@@ -25,6 +25,7 @@ jobs:
   publish:
     name: Publish ${{ inputs.subgraph_name }} schema (${{ inputs.environment }})
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     permissions:
       contents: read
     steps:

@@ -113,13 +113,15 @@ To enable these workflows, the following **GH Secrets** must be configured in th
 
 ### Schema Registry
 
-These should be configured as environment or repository secrets:
+These should be configured as environment secrets:
 
 - `SCHEMA_REGISTRY_REPO`: The GitHub repo (`owner/repo`) for the schema registry.
 - `SCHEMA_REGISTRY_TOKEN`: Token with write access to the registry repo.
 - `PRODUCTS_URL`, `CUSTOMERS_URL`, `CONTENT_URL`, `ORDERS_URL`: Deployed subgraph URLs per environment.
 - `SUPERGRAPH_RELOAD_URL`: Gateway reload endpoint (e.g., `https://gateway-smoke/.../admin/reload-supergraph`).
 - `SUPERGRAPH_RELOAD_TOKEN`: Shared token for reload authorization.
+
+Note: create GitHub Environments named `smoke`, `qa`, and `prod` and store the above values per environment so URLs and tokens can differ safely.
 
 ### Publishing
 - `NPM_TOKEN`: Automation token for publishing to npm.

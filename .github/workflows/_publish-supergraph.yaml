@@ -32,6 +32,7 @@ jobs:
   publish:
     name: Publish ${{ inputs.environment }} supergraph
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     permissions:
       contents: read
     steps:
