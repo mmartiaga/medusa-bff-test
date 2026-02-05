@@ -14,8 +14,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-prod-env-group
+            # envVars:
+            #   - fromGroup: bff-prod-env-group
 
           - type: web
             runtime: image
@@ -25,8 +25,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-prod-env-group
+            # envVars:
+            #   - fromGroup: bff-prod-env-group
 
           - type: web
             runtime: image
@@ -36,8 +36,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-prod-env-group
+            # envVars:
+            #   - fromGroup: bff-prod-env-group
 
           - type: web
             runtime: image
@@ -47,8 +47,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-prod-env-group
+            # envVars:
+            #   - fromGroup: bff-prod-env-group
 
           - type: web
             runtime: image
@@ -58,8 +58,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-prod-env-group
+            # envVars:
+            #   - fromGroup: bff-prod-env-group
 
       - name: smoke
         services:
@@ -71,8 +71,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-smoke-env-group
+            # envVars:
+            #   - fromGroup: bff-smoke-env-group
 
           - type: web
             runtime: image
@@ -82,8 +82,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-smoke-env-group
+            # envVars:
+            #   - fromGroup: bff-smoke-env-group
 
           - type: web
             runtime: image
@@ -93,8 +93,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-smoke-env-group
+            # envVars:
+            #   - fromGroup: bff-smoke-env-group
 
           - type: web
             runtime: image
@@ -104,8 +104,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-smoke-env-group
+            # envVars:
+            #   - fromGroup: bff-smoke-env-group
 
           - type: web
             runtime: image
@@ -115,8 +115,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-smoke-env-group
+            # envVars:
+            #   - fromGroup: bff-smoke-env-group
 
       - name: qa
         services:
@@ -128,8 +128,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-qa-env-group
+            # envVars:
+            #   - fromGroup: bff-qa-env-group
 
           - type: web
             runtime: image
@@ -139,8 +139,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-qa-env-group
+            # envVars:
+            #   - fromGroup: bff-qa-env-group
 
           - type: web
             runtime: image
@@ -150,8 +150,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-qa-env-group
+            # envVars:
+            #   - fromGroup: bff-qa-env-group
 
           - type: web
             runtime: image
@@ -161,8 +161,8 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-qa-env-group
+            # envVars:
+            #   - fromGroup: bff-qa-env-group
 
           - type: web
             runtime: image
@@ -172,5 +172,5 @@ projects:
             autoDeployTrigger: off
             image:
               url: traefik/whoami:v1.11
-            envVars:
-              - fromGroup: bff-qa-env-group
+            # envVars:
+            #   - fromGroup: bff-qa-env-group
