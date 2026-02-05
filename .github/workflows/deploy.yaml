@@ -238,147 +238,8 @@ jobs:
     secrets:
       RENDER_API_KEY: ${{ secrets.RENDER_API_KEY}}
 
-  qa-products:
-    needs: [detect-changes, build-products, smoke-products]
-    if: needs.detect-changes.outputs.products == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: products-qa
-      image: ${{ needs.build-products.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY}}
-
-  publish-subgraph-qa-products:
-    needs: [detect-changes, qa-products]
-    if: needs.detect-changes.outputs.products == 'true' && needs.qa-products.result == 'success'
-    uses: ./.github/workflows/_publish-subgraph.yaml
-    with:
-      environment: qa
-      subgraph_name: products
-    secrets:
-      REGISTRY_REPO: ${{ secrets.SCHEMA_REGISTRY_REPO }}
-      REGISTRY_TOKEN: ${{ secrets.SCHEMA_REGISTRY_TOKEN }}
-      SUBGRAPH_URL: ${{ secrets.PRODUCTS_URL }}
-
-  qa-orders:
-    needs: [detect-changes, build-orders, smoke-orders]
-    if: needs.detect-changes.outputs.orders == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: orders-qa
-      image: ${{ needs.build-orders.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY}}
-
-  publish-subgraph-qa-orders:
-    needs: [detect-changes, qa-orders]
-    if: needs.detect-changes.outputs.orders == 'true' && needs.qa-orders.result == 'success'
-    uses: ./.github/workflows/_publish-subgraph.yaml
-    with:
-      environment: qa
-      subgraph_name: orders
-    secrets:
-      REGISTRY_REPO: ${{ secrets.SCHEMA_REGISTRY_REPO }}
-      REGISTRY_TOKEN: ${{ secrets.SCHEMA_REGISTRY_TOKEN }}
-      SUBGRAPH_URL: ${{ secrets.ORDERS_URL }}
-
-  qa-content:
-    needs: [detect-changes, build-content, smoke-content]
-    if: needs.detect-changes.outputs.content == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: content-qa
-      image: ${{ needs.build-content.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY}}
-
-  publish-subgraph-qa-content:
-    needs: [detect-changes, qa-content]
-    if: needs.detect-changes.outputs.content == 'true' && needs.qa-content.result == 'success'
-    uses: ./.github/workflows/_publish-subgraph.yaml
-    with:
-      environment: qa
-      subgraph_name: content
-    secrets:
-      REGISTRY_REPO: ${{ secrets.SCHEMA_REGISTRY_REPO }}
-      REGISTRY_TOKEN: ${{ secrets.SCHEMA_REGISTRY_TOKEN }}
-      SUBGRAPH_URL: ${{ secrets.CONTENT_URL }}
-
-  qa-customers:
-    needs: [detect-changes, build-customers, smoke-customers]
-    if: needs.detect-changes.outputs.customers == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: customers-qa
-      image: ${{ needs.build-customers.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY}}
-
-  publish-subgraph-qa-customers:
-    needs: [detect-changes, qa-customers]
-    if: needs.detect-changes.outputs.customers == 'true' && needs.qa-customers.result == 'success'
-    uses: ./.github/workflows/_publish-subgraph.yaml
-    with:
-      environment: qa
-      subgraph_name: customers
-    secrets:
-      REGISTRY_REPO: ${{ secrets.SCHEMA_REGISTRY_REPO }}
-      REGISTRY_TOKEN: ${{ secrets.SCHEMA_REGISTRY_TOKEN }}
-      SUBGRAPH_URL: ${{ secrets.CUSTOMERS_URL }}
-
-  publish-supergraph-qa:
-    needs:
-      [
-        detect-changes,
-        publish-subgraph-qa-products,
-        publish-subgraph-qa-content,
-        publish-subgraph-qa-orders,
-        publish-subgraph-qa-customers,
-      ]
-    if: |
-      always() &&
-      (needs.detect-changes.outputs.products == 'true' ||
-       needs.detect-changes.outputs.content == 'true' ||
-       needs.detect-changes.outputs.orders == 'true' ||
-       needs.detect-changes.outputs.customers == 'true') &&
-      (needs.detect-changes.outputs.products != 'true' || needs.publish-subgraph-qa-products.result == 'success') &&
-      (needs.detect-changes.outputs.content != 'true' || needs.publish-subgraph-qa-content.result == 'success') &&
-      (needs.detect-changes.outputs.orders != 'true' || needs.publish-subgraph-qa-orders.result == 'success') &&
-      (needs.detect-changes.outputs.customers != 'true' || needs.publish-subgraph-qa-customers.result == 'success')
-    uses: ./.github/workflows/_publish-supergraph.yaml
-    with:
-      environment: qa
-    secrets:
-      REGISTRY_REPO: ${{ secrets.SCHEMA_REGISTRY_REPO }}
-      REGISTRY_TOKEN: ${{ secrets.SCHEMA_REGISTRY_TOKEN }}
-      PRODUCTS_URL: ${{ secrets.PRODUCTS_URL }}
-      CUSTOMERS_URL: ${{ secrets.CUSTOMERS_URL }}
-      CONTENT_URL: ${{ secrets.CONTENT_URL }}
-      ORDERS_URL: ${{ secrets.ORDERS_URL }}
-      SUPERGRAPH_RELOAD_URL: ${{ secrets.SUPERGRAPH_RELOAD_URL }}
-      SUPERGRAPH_RELOAD_TOKEN: ${{ secrets.SUPERGRAPH_RELOAD_TOKEN }}
-
-  qa-gateway:
-    needs:
-      [
-        detect-changes,
-        build-gateway,
-        smoke-gateway,
-        qa-products,
-        qa-content,
-        qa-orders,
-        qa-customers,
-      ]
-    if: needs.detect-changes.outputs.gateway == 'true'
-    uses: ./.github/workflows/_deploy-render.yaml
-    with:
-      app: gateway-qa
-      image: ${{ needs.build-gateway.outputs.image_tag }}
-    secrets:
-      RENDER_API_KEY: ${{ secrets.RENDER_API_KEY}}
-
   prod-products:
-    needs: [detect-changes, build-products, qa-products]
+    needs: [detect-changes, build-products]
     if: needs.detect-changes.outputs.products == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
@@ -400,7 +261,7 @@ jobs:
       SUBGRAPH_URL: ${{ secrets.PRODUCTS_URL }}
 
   prod-orders:
-    needs: [detect-changes, build-orders, qa-orders]
+    needs: [detect-changes, build-orders]
     if: needs.detect-changes.outputs.orders == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
@@ -422,7 +283,7 @@ jobs:
       SUBGRAPH_URL: ${{ secrets.ORDERS_URL }}
 
   prod-content:
-    needs: [detect-changes, build-content, qa-content]
+    needs: [detect-changes, build-content]
     if: needs.detect-changes.outputs.content == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
@@ -444,7 +305,7 @@ jobs:
       SUBGRAPH_URL: ${{ secrets.CONTENT_URL }}
 
   prod-customers:
-    needs: [detect-changes, build-customers, qa-customers]
+    needs: [detect-changes, build-customers]
     if: needs.detect-changes.outputs.customers == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
@@ -498,7 +359,7 @@ jobs:
       SUPERGRAPH_RELOAD_TOKEN: ${{ secrets.SUPERGRAPH_RELOAD_TOKEN }}
 
   prod-gateway:
-    needs: [detect-changes, build-gateway, qa-gateway, prod-products, prod-content, prod-customers, prod-orders]
+    needs: [detect-changes, build-gateway, prod-products, prod-content, prod-customers, prod-orders]
     if: needs.detect-changes.outputs.gateway == 'true'
     uses: ./.github/workflows/_deploy-render.yaml
     with:
