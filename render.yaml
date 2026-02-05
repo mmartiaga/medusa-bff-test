@@ -13,7 +13,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/gateway:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-prod-env-group
 
@@ -24,7 +24,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/content:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-prod-env-group
 
@@ -35,7 +35,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/products:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-prod-env-group
 
@@ -46,7 +46,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/orders:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-prod-env-group
 
@@ -57,7 +57,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/customers:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-prod-env-group
 
@@ -70,7 +70,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/gateway:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-smoke-env-group
 
@@ -81,7 +81,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/content:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-smoke-env-group
 
@@ -92,7 +92,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/products:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-smoke-env-group
 
@@ -103,7 +103,7 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/orders:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-smoke-env-group
 
@@ -114,6 +114,6 @@ projects:
             region: oregon
             autoDeployTrigger: off
             image:
-              url: traefik/whoami:v1.11
+              url: ghcr.io/mmartiaga/medusa-bff-test/customers:e02943474e9f567897c28a00e634a19f8cc7111f
             envVars:
               - fromGroup: bff-smoke-env-group
