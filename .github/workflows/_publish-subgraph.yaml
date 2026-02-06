@@ -28,6 +28,8 @@ jobs:
     environment: ${{ inputs.environment }}
     permissions:
       contents: read
+    env:
+      APOLLO_ELV2_LICENSE_ACCEPT: accept
     steps:
       - name: Install Apollo Rover
         run: |
