@@ -20,6 +20,7 @@ import { sessionUpdatePlugin } from './plugins/sessionUpdate';
 const isDev = process.env.NODE_ENV !== 'production';
 const supergraphSdlUrl = process.env.SUPERGRAPH_SDL_URL?.trim();
 const supergraphReloadToken = process.env.SUPERGRAPH_RELOAD_TOKEN;
+const supergraphSdlToken = process.env.SUPERGRAPH_SDL_TOKEN;
 const useRegistry = Boolean(supergraphSdlUrl);
 
 const POLL_INTERVAL = 10000;
@@ -31,7 +32,13 @@ async function fetchSupergraphSdl(url: string) {
   const timeout = setTimeout(() => controller.abort(), SUPERGRAPH_FETCH_TIMEOUT_MS);
 
   try {
-    const response = await fetch(url, { signal: controller.signal });
+    const headers: Record<string, string> = {};
+    if (supergraphSdlToken) {
+      headers.Authorization = `Bearer ${supergraphSdlToken}`;
+      headers.Accept = 'application/vnd.github.raw';
+    }
+
+    const response = await fetch(url, { signal: controller.signal, headers });
     if (!response.ok) {
       throw new Error(
         `Failed to fetch supergraph SDL: ${response.status} ${response.statusText}`

@@ -36,6 +36,7 @@ jobs:
 
       - name: Introspect subgraph
         env:
+          APOLLO_ELV2_LICENSE_ACCEPT: accept
           SUBGRAPH_URL: ${{ secrets.SUBGRAPH_URL }}
         run: |
           set -euo pipefail

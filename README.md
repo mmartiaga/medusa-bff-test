@@ -30,6 +30,7 @@ Control which mode is active via `SUPERGRAPH_SDL_URL`:
 
 ```env
 SUPERGRAPH_SDL_URL=https://raw.githubusercontent.com/<org>/<schema-registry>/main/supergraph/<env>/latest.graphql
+SUPERGRAPH_SDL_TOKEN=ghp_... # required if registry repo is private
 SUPERGRAPH_RELOAD_TOKEN=your-shared-secret
 ```
 
