@@ -82,7 +82,7 @@ jobs:
                 file: schema-registry/subgraphs/${{ inputs.environment }}/orders/latest.graphql
           EOF
 
-          rover supergraph compose --config supergraph.yaml > supergraph.graphql
+          rover supergraph compose --config supergraph.yaml --elv2-license accept > supergraph.graphql
 
       - name: Publish supergraph to registry
         env:
