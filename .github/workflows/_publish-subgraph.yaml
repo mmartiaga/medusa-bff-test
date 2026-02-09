@@ -20,6 +20,29 @@ on:
         required: true
       SUBGRAPH_URL:
         required: true
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to publish (smoke/qa/prod)
+        required: true
+        type: choice
+        options:
+          - smoke
+          - qa
+          - prod
+      subgraph_name:
+        description: Subgraph name
+        required: true
+        type: choice
+        options:
+          - products
+          - customers
+          - content
+          - orders
+      registry_branch:
+        description: Registry branch
+        required: false
+        default: main
 
 concurrency:
   group: schema-registry-${{ inputs.registry_branch }}

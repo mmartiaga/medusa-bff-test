@@ -27,6 +27,20 @@ on:
         required: true
       SUPERGRAPH_RELOAD_TOKEN:
         required: false
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Environment to publish (smoke/qa/prod)
+        required: true
+        type: choice
+        options:
+          - smoke
+          - qa
+          - prod
+      registry_branch:
+        description: Registry branch
+        required: false
+        default: main
 
 concurrency:
   group: schema-registry-${{ inputs.registry_branch }}
