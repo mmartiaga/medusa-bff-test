@@ -13,7 +13,7 @@ export const productResolvers = {
       deployedBy: 'GitHub Actions',
       platform: 'Render',
     }),
-    // smokePing: () => `products-smoke:${new Date().toISOString()}`,
+    smokePing: () => `products-smoke:${new Date().toISOString()}`,
     products: async (
       _parent: unknown,
       args: HttpTypes.StoreProductParams & { id?: string },
