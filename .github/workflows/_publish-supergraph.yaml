@@ -28,6 +28,10 @@ on:
       SUPERGRAPH_RELOAD_TOKEN:
         required: false
 
+concurrency:
+  group: schema-registry-${{ inputs.registry_branch }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Publish ${{ inputs.environment }} supergraph

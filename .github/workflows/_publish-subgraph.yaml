@@ -21,6 +21,10 @@ on:
       SUBGRAPH_URL:
         required: true
 
+concurrency:
+  group: schema-registry-${{ inputs.registry_branch }}
+  cancel-in-progress: false
+
 jobs:
   publish:
     name: Publish ${{ inputs.subgraph_name }} schema (${{ inputs.environment }})
