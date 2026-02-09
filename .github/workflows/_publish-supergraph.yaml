@@ -99,6 +99,8 @@ jobs:
           cd schema-registry
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git fetch origin "${{ inputs.registry_branch }}"
+          git rebase "origin/${{ inputs.registry_branch }}"
           git add "supergraph/$TARGET_ENV/latest.graphql" "supergraph/$TARGET_ENV/${GITHUB_SHA}.graphql"
 
           if git diff --cached --quiet; then
