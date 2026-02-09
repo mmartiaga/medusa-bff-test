@@ -83,11 +83,11 @@ jobs:
           git fetch origin "${{ inputs.registry_branch }}"
           git rebase "origin/${{ inputs.registry_branch }}"
 
-          target_dir="schema-registry/subgraphs/$TARGET_ENV/$SUBGRAPH_NAME"
+          target_dir="subgraphs/$TARGET_ENV/$SUBGRAPH_NAME"
           mkdir -p "$target_dir"
 
-          cp subgraph.graphql "$target_dir/latest.graphql"
-          cp subgraph.graphql "$target_dir/${GITHUB_SHA}.graphql"
+          cp ../subgraph.graphql "$target_dir/latest.graphql"
+          cp ../subgraph.graphql "$target_dir/${GITHUB_SHA}.graphql"
           git add "subgraphs/$TARGET_ENV/$SUBGRAPH_NAME/latest.graphql" "subgraphs/$TARGET_ENV/$SUBGRAPH_NAME/${GITHUB_SHA}.graphql"
 
           if git diff --cached --quiet; then
