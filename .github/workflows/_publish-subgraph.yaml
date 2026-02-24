@@ -14,9 +14,9 @@ on:
         type: string
         default: main
     secrets:
-      REGISTRY_REPO:
+      SCHEMA_REGISTRY_REPO:
         required: true
-      REGISTRY_TOKEN:
+      SCHEMA_REGISTRY_TOKEN:
         required: true
       SUBGRAPH_URL:
         required: true
@@ -45,7 +45,7 @@ on:
         default: main
 
 concurrency:
-  group: schema-registry-${{ inputs.registry_branch }}
+  group: schema-registry-${{ inputs.registry_branch }}-${{ inputs.environment }}
   cancel-in-progress: false
 
 jobs:
@@ -73,9 +73,11 @@ jobs:
           sleep_seconds=15
           attempt=1
 
+          header_args=(--header "content-type: application/json")
+
           while [ "$attempt" -le "$max_attempts" ]; do
             echo "Introspection attempt $attempt/$max_attempts..."
-            if rover subgraph introspect "$SUBGRAPH_URL" --client-timeout 300 > subgraph.graphql; then
+            if rover subgraph introspect "$SUBGRAPH_URL" --client-timeout 300 "${header_args[@]}" > subgraph.graphql; then
               echo "Introspection succeeded."
               break
             fi
@@ -92,35 +94,52 @@ jobs:
       - name: Checkout schema registry
         uses: actions/checkout@v4
         with:
-          repository: ${{ secrets.REGISTRY_REPO }}
+          repository: ${{ secrets.SCHEMA_REGISTRY_REPO }}
           ref: ${{ inputs.registry_branch }}
-          token: ${{ secrets.REGISTRY_TOKEN }}
+          token: ${{ secrets.SCHEMA_REGISTRY_TOKEN }}
           path: schema-registry
 
       - name: Publish subgraph to registry
         env:
           TARGET_ENV: ${{ inputs.environment }}
           SUBGRAPH_NAME: ${{ inputs.subgraph_name }}
+          REGISTRY_BRANCH: ${{ inputs.registry_branch }}
         run: |
           set -euo pipefail
 
           cd schema-registry
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git fetch origin "${{ inputs.registry_branch }}"
-          git rebase "origin/${{ inputs.registry_branch }}"
+          max_push_attempts=5
+          push_attempt=1
 
-          target_dir="subgraphs/$TARGET_ENV/$SUBGRAPH_NAME"
-          mkdir -p "$target_dir"
+          while [ "$push_attempt" -le "$max_push_attempts" ]; do
+            git fetch origin "$REGISTRY_BRANCH"
+            git rebase "origin/$REGISTRY_BRANCH"
 
-          cp ../subgraph.graphql "$target_dir/latest.graphql"
-          cp ../subgraph.graphql "$target_dir/${GITHUB_SHA}.graphql"
-          git add "subgraphs/$TARGET_ENV/$SUBGRAPH_NAME/latest.graphql" "subgraphs/$TARGET_ENV/$SUBGRAPH_NAME/${GITHUB_SHA}.graphql"
+            target_dir="subgraphs/$TARGET_ENV/$SUBGRAPH_NAME"
+            mkdir -p "$target_dir"
 
-          if git diff --cached --quiet; then
-            echo "No subgraph changes to publish."
-            exit 0
-          fi
+            cp ../subgraph.graphql "$target_dir/latest.graphql"
+            cp ../subgraph.graphql "$target_dir/${GITHUB_SHA}.graphql"
+            git add "subgraphs/$TARGET_ENV/$SUBGRAPH_NAME/latest.graphql" "subgraphs/$TARGET_ENV/$SUBGRAPH_NAME/${GITHUB_SHA}.graphql"
 
-          git commit -m "Publish ${TARGET_ENV} ${SUBGRAPH_NAME} subgraph (${GITHUB_SHA})"
-          git push origin "HEAD:${{ inputs.registry_branch }}"
+            if git diff --cached --quiet; then
+              echo "No subgraph changes to publish."
+              exit 0
+            fi
+
+            git commit -m "Publish ${TARGET_ENV} ${SUBGRAPH_NAME} subgraph (${GITHUB_SHA})"
+            if git push origin "HEAD:$REGISTRY_BRANCH"; then
+              echo "Registry push succeeded."
+              exit 0
+            fi
+
+            echo "Registry push failed, retrying ($push_attempt/$max_push_attempts)..."
+            git reset --hard "origin/$REGISTRY_BRANCH"
+            push_attempt=$((push_attempt + 1))
+            sleep 5
+          done
+
+          echo "::error::Failed to push registry updates after $max_push_attempts attempts."
+          exit 1

@@ -81,6 +81,8 @@ export type ApplicationMethod = {
 
 export type ApplicationType = 'fixed' | 'percentage';
 
+export type CacheControlScope = 'PRIVATE' | 'PUBLIC';
+
 export type Cart = {
   billingAddress?: Maybe<Address>;
   createdAt?: Maybe<Scalars['DateTime']['output']>;
@@ -244,15 +246,6 @@ export type Order = {
   total: Scalars['Int']['output'];
 };
 
-export type OrdersDeploymentInfo = {
-  buildNumber: Scalars['String']['output'];
-  deployedAt: Scalars['DateTime']['output'];
-  environment: Scalars['String']['output'];
-  message: Scalars['String']['output'];
-  nodeVersion: Scalars['String']['output'];
-  version: Scalars['String']['output'];
-};
-
 export type Payment = {
   amount: Scalars['Int']['output'];
   createdAt?: Maybe<Scalars['DateTime']['output']>;
@@ -313,7 +306,6 @@ export type Promotion = {
 
 export type Query = {
   cart?: Maybe<Cart>;
-  deploymentInfoOrders: OrdersDeploymentInfo;
 };
 
 export type QueryCartArgs = {
@@ -485,6 +477,7 @@ export type ResolversTypes = {
   ApplicationMethod: ResolverTypeWrapper<ApplicationMethod>;
   ApplicationType: ApplicationType;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  CacheControlScope: CacheControlScope;
   Cart: ResolverTypeWrapper<Cart>;
   CompleteCartError: ResolverTypeWrapper<CompleteCartError>;
   CompleteCartErrorResult: ResolverTypeWrapper<CompleteCartErrorResult>;
@@ -502,7 +495,6 @@ export type ResolversTypes = {
   LineItem: ResolverTypeWrapper<LineItem>;
   Mutation: ResolverTypeWrapper<Record<PropertyKey, never>>;
   Order: ResolverTypeWrapper<Order>;
-  OrdersDeploymentInfo: ResolverTypeWrapper<OrdersDeploymentInfo>;
   Payment: ResolverTypeWrapper<Payment>;
   PaymentCollection: ResolverTypeWrapper<PaymentCollection>;
   PaymentProviders: ResolverTypeWrapper<PaymentProviders>;
@@ -541,7 +533,6 @@ export type ResolversParentTypes = {
   LineItem: LineItem;
   Mutation: Record<PropertyKey, never>;
   Order: Order;
-  OrdersDeploymentInfo: OrdersDeploymentInfo;
   Payment: Payment;
   PaymentCollection: PaymentCollection;
   PaymentProviders: PaymentProviders;
@@ -557,10 +548,22 @@ export type ResolversParentTypes = {
   UpdateLineItemInput: UpdateLineItemInput;
 };
 
+export type CacheControlDirectiveArgs = {
+  maxAge?: Maybe<Scalars['Int']['input']>;
+  scope?: Maybe<CacheControlScope>;
+};
+
+export type CacheControlDirectiveResolver<
+  Result,
+  Parent,
+  ContextType = GraphQLContext,
+  Args = CacheControlDirectiveArgs,
+> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
 export type AddressResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Address'] = ResolversParentTypes['Address'],
+  ParentType extends ResolversParentTypes['Address'] =
+    ResolversParentTypes['Address'],
 > = {
   address1?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   address2?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -595,8 +598,8 @@ export type AddressResolvers<
 
 export type ApplicationMethodResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['ApplicationMethod'] = ResolversParentTypes['ApplicationMethod'],
+  ParentType extends ResolversParentTypes['ApplicationMethod'] =
+    ResolversParentTypes['ApplicationMethod'],
 > = {
   currencyCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   type?: Resolver<ResolversTypes['ApplicationType'], ParentType, ContextType>;
@@ -605,8 +608,8 @@ export type ApplicationMethodResolvers<
 
 export type CartResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Cart'] = ResolversParentTypes['Cart'],
+  ParentType extends ResolversParentTypes['Cart'] =
+    ResolversParentTypes['Cart'],
 > = {
   billingAddress?: Resolver<
     Maybe<ResolversTypes['Address']>,
@@ -670,8 +673,8 @@ export type CartResolvers<
 
 export type CompleteCartErrorResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['CompleteCartError'] = ResolversParentTypes['CompleteCartError'],
+  ParentType extends ResolversParentTypes['CompleteCartError'] =
+    ResolversParentTypes['CompleteCartError'],
 > = {
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -680,8 +683,8 @@ export type CompleteCartErrorResolvers<
 
 export type CompleteCartErrorResultResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['CompleteCartErrorResult'] = ResolversParentTypes['CompleteCartErrorResult'],
+  ParentType extends ResolversParentTypes['CompleteCartErrorResult'] =
+    ResolversParentTypes['CompleteCartErrorResult'],
 > = {
   cart?: Resolver<Maybe<ResolversTypes['Cart']>, ParentType, ContextType>;
   error?: Resolver<
@@ -695,8 +698,8 @@ export type CompleteCartErrorResultResolvers<
 
 export type CompleteCartOrderResultResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['CompleteCartOrderResult'] = ResolversParentTypes['CompleteCartOrderResult'],
+  ParentType extends ResolversParentTypes['CompleteCartOrderResult'] =
+    ResolversParentTypes['CompleteCartOrderResult'],
 > = {
   order?: Resolver<Maybe<ResolversTypes['Order']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -705,8 +708,8 @@ export type CompleteCartOrderResultResolvers<
 
 export type CompleteCartResponseResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['CompleteCartResponse'] = ResolversParentTypes['CompleteCartResponse'],
+  ParentType extends ResolversParentTypes['CompleteCartResponse'] =
+    ResolversParentTypes['CompleteCartResponse'],
 > = {
   __resolveType: TypeResolveFn<
     'CompleteCartErrorResult' | 'CompleteCartOrderResult',
@@ -717,8 +720,8 @@ export type CompleteCartResponseResolvers<
 
 export type CountryResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Country'] = ResolversParentTypes['Country'],
+  ParentType extends ResolversParentTypes['Country'] =
+    ResolversParentTypes['Country'],
 > = {
   displayName?: Resolver<
     Maybe<ResolversTypes['String']>,
@@ -730,20 +733,24 @@ export type CountryResolvers<
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
-export interface DateTimeScalarConfig
-  extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
+export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<
+  ResolversTypes['DateTime'],
+  any
+> {
   name: 'DateTime';
 }
 
-export interface JsonScalarConfig
-  extends GraphQLScalarTypeConfig<ResolversTypes['JSON'], any> {
+export interface JsonScalarConfig extends GraphQLScalarTypeConfig<
+  ResolversTypes['JSON'],
+  any
+> {
   name: 'JSON';
 }
 
 export type LineItemResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['LineItem'] = ResolversParentTypes['LineItem'],
+  ParentType extends ResolversParentTypes['LineItem'] =
+    ResolversParentTypes['LineItem'],
 > = {
   cart?: Resolver<Maybe<ResolversTypes['Cart']>, ParentType, ContextType>;
   cartId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -791,8 +798,8 @@ export type LineItemResolvers<
 
 export type MutationResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
+  ParentType extends ResolversParentTypes['Mutation'] =
+    ResolversParentTypes['Mutation'],
 > = {
   addShippingMethod?: Resolver<
     Maybe<ResolversTypes['Cart']>,
@@ -852,8 +859,8 @@ export type MutationResolvers<
 
 export type OrderResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Order'] = ResolversParentTypes['Order'],
+  ParentType extends ResolversParentTypes['Order'] =
+    ResolversParentTypes['Order'],
 > = {
   createdAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
   currencyCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -905,23 +912,10 @@ export type OrderResolvers<
   total?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
 };
 
-export type OrdersDeploymentInfoResolvers<
-  ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['OrdersDeploymentInfo'] = ResolversParentTypes['OrdersDeploymentInfo'],
-> = {
-  buildNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  deployedAt?: Resolver<ResolversTypes['DateTime'], ParentType, ContextType>;
-  environment?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  nodeVersion?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  version?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-};
-
 export type PaymentResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Payment'] = ResolversParentTypes['Payment'],
+  ParentType extends ResolversParentTypes['Payment'] =
+    ResolversParentTypes['Payment'],
 > = {
   amount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   createdAt?: Resolver<
@@ -937,8 +931,8 @@ export type PaymentResolvers<
 
 export type PaymentCollectionResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['PaymentCollection'] = ResolversParentTypes['PaymentCollection'],
+  ParentType extends ResolversParentTypes['PaymentCollection'] =
+    ResolversParentTypes['PaymentCollection'],
 > = {
   amount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   currencyCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -963,16 +957,16 @@ export type PaymentCollectionResolvers<
 
 export type PaymentProvidersResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['PaymentProviders'] = ResolversParentTypes['PaymentProviders'],
+  ParentType extends ResolversParentTypes['PaymentProviders'] =
+    ResolversParentTypes['PaymentProviders'],
 > = {
   id?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
 };
 
 export type PaymentSessionsResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['PaymentSessions'] = ResolversParentTypes['PaymentSessions'],
+  ParentType extends ResolversParentTypes['PaymentSessions'] =
+    ResolversParentTypes['PaymentSessions'],
 > = {
   amount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   currencyCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -988,16 +982,16 @@ export type PaymentSessionsResolvers<
 
 export type ProductVariantResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['ProductVariant'] = ResolversParentTypes['ProductVariant'],
+  ParentType extends ResolversParentTypes['ProductVariant'] =
+    ResolversParentTypes['ProductVariant'],
 > = {
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
 };
 
 export type PromotionResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Promotion'] = ResolversParentTypes['Promotion'],
+  ParentType extends ResolversParentTypes['Promotion'] =
+    ResolversParentTypes['Promotion'],
 > = {
   applicationMethod?: Resolver<
     Maybe<ResolversTypes['ApplicationMethod']>,
@@ -1015,8 +1009,8 @@ export type PromotionResolvers<
 
 export type QueryResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
+  ParentType extends ResolversParentTypes['Query'] =
+    ResolversParentTypes['Query'],
 > = {
   cart?: Resolver<
     Maybe<ResolversTypes['Cart']>,
@@ -1024,17 +1018,12 @@ export type QueryResolvers<
     ContextType,
     RequireFields<QueryCartArgs, 'id'>
   >;
-  deploymentInfoOrders?: Resolver<
-    ResolversTypes['OrdersDeploymentInfo'],
-    ParentType,
-    ContextType
-  >;
 };
 
 export type RegionResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['Region'] = ResolversParentTypes['Region'],
+  ParentType extends ResolversParentTypes['Region'] =
+    ResolversParentTypes['Region'],
 > = {
   countries?: Resolver<
     Maybe<Array<Maybe<ResolversTypes['Country']>>>,
@@ -1053,8 +1042,8 @@ export type RegionResolvers<
 
 export type ShippingMethodResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['ShippingMethod'] = ResolversParentTypes['ShippingMethod'],
+  ParentType extends ResolversParentTypes['ShippingMethod'] =
+    ResolversParentTypes['ShippingMethod'],
 > = {
   amount?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   cartId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1075,8 +1064,8 @@ export type ShippingMethodResolvers<
 
 export type StoreLineItemDeleteResponseResolvers<
   ContextType = GraphQLContext,
-  ParentType extends
-    ResolversParentTypes['StoreLineItemDeleteResponse'] = ResolversParentTypes['StoreLineItemDeleteResponse'],
+  ParentType extends ResolversParentTypes['StoreLineItemDeleteResponse'] =
+    ResolversParentTypes['StoreLineItemDeleteResponse'],
 > = {
   deleted?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
@@ -1097,7 +1086,6 @@ export type Resolvers<ContextType = GraphQLContext> = {
   LineItem?: LineItemResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Order?: OrderResolvers<ContextType>;
-  OrdersDeploymentInfo?: OrdersDeploymentInfoResolvers<ContextType>;
   Payment?: PaymentResolvers<ContextType>;
   PaymentCollection?: PaymentCollectionResolvers<ContextType>;
   PaymentProviders?: PaymentProvidersResolvers<ContextType>;
@@ -1108,4 +1096,8 @@ export type Resolvers<ContextType = GraphQLContext> = {
   Region?: RegionResolvers<ContextType>;
   ShippingMethod?: ShippingMethodResolvers<ContextType>;
   StoreLineItemDeleteResponse?: StoreLineItemDeleteResponseResolvers<ContextType>;
+};
+
+export type DirectiveResolvers<ContextType = GraphQLContext> = {
+  cacheControl?: CacheControlDirectiveResolver<any, any, ContextType>;
 };

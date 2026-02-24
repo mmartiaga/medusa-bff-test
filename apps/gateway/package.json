@@ -1,6 +1,6 @@
 {
   "name": "@gfed-medusa-bff/gateway",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "scripts": {
     "dev": "NODE_ENV=development tsx watch src/index.ts",
@@ -10,8 +10,12 @@
   },
   "dependencies": {
     "@apollo/gateway": "^2.12.1",
-    "@apollo/server": "^5.2.0",
+    "@apollo/server": "^5.4.0",
+    "@apollo/server-plugin-response-cache": "^5.0.0",
+    "@apollo/utils.keyvadapter": "^4.0.1",
+    "@apollo/utils.keyvaluecache": "^4.0.0",
     "@as-integrations/express5": "^1.1.2",
+    "@keyv/redis": "^5.1.6",
     "connect-redis": "^9.0.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.1",
@@ -19,6 +23,7 @@
     "express-session": "1.18.2",
     "graphql": "^16.12.0",
     "graphql-tag": "^2.12.6",
+    "keyv": "^5.6.0",
     "redis": "^5.10.0"
   },
   "devDependencies": {

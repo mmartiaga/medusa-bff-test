@@ -1,15 +1,5 @@
 type Query {
-  me: Customer
-  deploymentInfoCustomers: CustomersDeploymentInfo!
-}
-
-type CustomersDeploymentInfo {
-  version: String!
-  environment: String!
-  message: String!
-  deployedAt: DateTime!
-  serviceName: String!
-  region: String!
+  me: Customer @cacheControl(maxAge: 0)
 }
 
 type Mutation {
@@ -26,7 +16,7 @@ type LogoutResponse {
   success: Boolean
 }
 
-type Customer {
+type Customer @cacheControl(maxAge: 0) {
   id: String!
   email: String
   defaultBillingAddressId: String

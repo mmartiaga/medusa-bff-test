@@ -3,19 +3,34 @@ import 'dotenv/config';
 import express from 'express';
 import http from 'http';
 import type { AddressInfo } from 'net';
+import { AsyncLocalStorage } from 'node:async_hooks';
+import type { KeyValueCacheSetOptions } from '@apollo/utils.keyvaluecache';
+import type {
+  ApolloServerPlugin,
+  GraphQLRequestListener,
+} from '@apollo/server';
 
 import {
   ApolloGateway,
   IntrospectAndCompose,
   RemoteGraphQLDataSource,
   SupergraphSdlUpdateFunction,
+  type ServiceEndpointDefinition,
 } from '@apollo/gateway';
 import { ApolloServer } from '@apollo/server';
 import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import responseCachePlugin from '@apollo/server-plugin-response-cache';
 import { expressMiddleware } from '@as-integrations/express5';
 
+import { responseCache } from './config/cache';
 import { sessionConfig } from './config/session';
 import { sessionUpdatePlugin } from './plugins/sessionUpdate';
+
+type GatewayContext = {
+  req: express.Request;
+  res: express.Response;
+  session: express.Request['session'];
+};
 
 const isDev = process.env.NODE_ENV !== 'production';
 const supergraphSdlUrl = process.env.SUPERGRAPH_SDL_URL?.trim();
@@ -56,16 +71,12 @@ function isReloadAuthorized(req: express.Request) {
     return isDev;
   }
 
-  const tokenHeader = req.header('x-supergraph-reload-token') || req.header('authorization');
-  if (!tokenHeader) {
+  const tokenHeader = req.header('authorization');
+  if (!tokenHeader || !tokenHeader.startsWith('Bearer ')) {
     return false;
   }
 
-  if (tokenHeader.startsWith('Bearer ')) {
-    return tokenHeader.slice('Bearer '.length) === supergraphReloadToken;
-  }
-
-  return tokenHeader === supergraphReloadToken;
+  return tokenHeader.slice('Bearer '.length) === supergraphReloadToken;
 }
 
 async function startServer() {
@@ -75,8 +86,12 @@ async function startServer() {
   let updateSupergraphSdl: SupergraphSdlUpdateFunction | null = null;
   let lastReloadAt: string | null = null;
   let lastReloadError: string | null = null;
-  const buildService = ({ name: _, url }: { name: string; url: string }) =>
-    new RemoteGraphQLDataSource({
+  const buildService = ({ name, url }: ServiceEndpointDefinition) => {
+    if (!url) {
+      throw new Error(`Missing URL for subgraph "${name}".`);
+    }
+
+    return new RemoteGraphQLDataSource({
       url,
       willSendRequest({ request, context }) {
         // Pass cookie and session data to subgraphs
@@ -89,15 +104,18 @@ async function startServer() {
         }
       },
     });
+  };
 
   const gateway = useRegistry
     ? new ApolloGateway({
-        supergraphSdl: async ({ update }) => {
-          updateSupergraphSdl = update;
-          const supergraphSdl = await fetchSupergraphSdl(supergraphSdlUrl!);
-          lastReloadAt = new Date().toISOString();
-          lastReloadError = null;
-          return { supergraphSdl };
+        supergraphSdl: {
+          async initialize({ update }) {
+            updateSupergraphSdl = update;
+            const supergraphSdl = await fetchSupergraphSdl(supergraphSdlUrl!);
+            lastReloadAt = new Date().toISOString();
+            lastReloadError = null;
+            return { supergraphSdl };
+          },
         },
         buildService,
       })
@@ -126,12 +144,62 @@ async function startServer() {
         buildService,
       });
 
-  const server = new ApolloServer({
+  const cacheContext = new AsyncLocalStorage<{ cacheHit: boolean }>();
+
+  const baseCache = responseCache;
+  const responseCacheWithTracking =
+    baseCache && process.env.CACHE_DEBUG === 'true'
+      ? {
+          async get(key: string) {
+            const value = await baseCache.get(key);
+            const store = cacheContext.getStore();
+            if (store && value !== undefined && value !== null) {
+              store.cacheHit = true;
+            }
+            return value;
+          },
+          async set(
+            key: string,
+            value: string,
+            options?: KeyValueCacheSetOptions
+          ) {
+            return baseCache.set(key, value, options);
+          },
+          async delete(key: string) {
+            return baseCache.delete(key);
+          },
+        }
+      : baseCache;
+
+  const cacheDebugPlugin: ApolloServerPlugin<GatewayContext> = {
+    async requestDidStart(): Promise<GraphQLRequestListener<GatewayContext> | void> {
+        if (process.env.CACHE_DEBUG !== 'true') return;
+        cacheContext.enterWith({ cacheHit: false });
+        return {
+          async willSendResponse({ contextValue }) {
+            const store = cacheContext.getStore();
+            if (contextValue?.res && store) {
+              contextValue.res.setHeader(
+                'x-cache',
+                store.cacheHit ? 'HIT' : 'MISS'
+              );
+            }
+          },
+        };
+      },
+    };
+
+  const server = new ApolloServer<GatewayContext>({
     gateway,
     introspection: isDev,
     plugins: [
       ApolloServerPluginDrainHttpServer({ httpServer }),
       sessionUpdatePlugin,
+      responseCachePlugin({
+        cache: responseCacheWithTracking,
+        sessionId: async ({ contextValue }) => contextValue.req.sessionID ?? null,
+      }),
+      cacheDebugPlugin,
     ],
   });
 

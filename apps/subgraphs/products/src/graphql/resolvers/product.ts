@@ -5,15 +5,6 @@ import { GraphQLContext } from '../types/context';
 
 export const productResolvers = {
   Query: {
-    deploymentInfoProducts: () => ({
-      version: '1.0.0',
-      environment: process.env.NODE_ENV || 'development',
-      message: 'Products subgraph - Initial production release v1.0.0',
-      deployedAt: new Date().toISOString(),
-      deployedBy: 'GitHub Actions',
-      platform: 'Render',
-    }),
-    // smokePing: () => `products-smoke:${new Date().toISOString()}`,
     products: async (
       _parent: unknown,
       args: HttpTypes.StoreProductParams & { id?: string },
@@ -43,7 +34,10 @@ export const productResolvers = {
       params: HttpTypes.StoreProductCategoryParams & { id: string },
       context: GraphQLContext
     ) => {
-      context.logger.info({ categoryId: params.id }, 'Fetching product category by ID');
+      context.logger.info(
+        { categoryId: params.id },
+        'Fetching product category by ID'
+      );
       return await context.categoryService.getCategory(params.id);
     },
     collections: async (
@@ -59,7 +53,10 @@ export const productResolvers = {
       params: { id: string },
       context: GraphQLContext
     ) => {
-      context.logger.info({ collectionId: params.id }, 'Fetching collection by ID');
+      context.logger.info(
+        { collectionId: params.id },
+        'Fetching collection by ID'
+      );
       return await context.collectionService.getCollection(params.id);
     },
     searchProducts: async (
@@ -69,6 +66,17 @@ export const productResolvers = {
     ) => {
       context.logger.info({ query: args.query }, 'Searching products');
       return await context.algoliaSearchService.search(args);
+    },
+  },
+  ProductVariant: {
+    product: async (
+      parent: { productId?: string; product?: unknown },
+      _args: unknown,
+      context: GraphQLContext
+    ) => {
+      if (parent.product) return parent.product as any;
+      if (!parent.productId) return null;
+      return await context.productByIdLoader.load(parent.productId);
     },
   },
   Collection: {
