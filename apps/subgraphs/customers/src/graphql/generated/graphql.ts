@@ -254,8 +254,8 @@ export type CacheControlDirectiveResolver<
 
 export type CustomerResolvers<
   ContextType = GraphQLContext,
-  ParentType extends ResolversParentTypes['Customer'] =
-    ResolversParentTypes['Customer'],
+  ParentType extends
+    ResolversParentTypes['Customer'] = ResolversParentTypes['Customer'],
 > = {
   addresses?: Resolver<
     Maybe<Array<Maybe<ResolversTypes['CustomerAddress']>>>,
@@ -290,8 +290,8 @@ export type CustomerResolvers<
 
 export type CustomerAddressResolvers<
   ContextType = GraphQLContext,
-  ParentType extends ResolversParentTypes['CustomerAddress'] =
-    ResolversParentTypes['CustomerAddress'],
+  ParentType extends
+    ResolversParentTypes['CustomerAddress'] = ResolversParentTypes['CustomerAddress'],
 > = {
   address1?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   address2?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -338,17 +338,15 @@ export type CustomerAddressResolvers<
   province?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
 };
 
-export interface DateTimeScalarConfig extends GraphQLScalarTypeConfig<
-  ResolversTypes['DateTime'],
-  any
-> {
+export interface DateTimeScalarConfig
+  extends GraphQLScalarTypeConfig<ResolversTypes['DateTime'], any> {
   name: 'DateTime';
 }
 
 export type LoginResponseResolvers<
   ContextType = GraphQLContext,
-  ParentType extends ResolversParentTypes['LoginResponse'] =
-    ResolversParentTypes['LoginResponse'],
+  ParentType extends
+    ResolversParentTypes['LoginResponse'] = ResolversParentTypes['LoginResponse'],
 > = {
   isCustomerLoggedIn?: Resolver<
     Maybe<ResolversTypes['Boolean']>,
@@ -360,16 +358,16 @@ export type LoginResponseResolvers<
 
 export type LogoutResponseResolvers<
   ContextType = GraphQLContext,
-  ParentType extends ResolversParentTypes['LogoutResponse'] =
-    ResolversParentTypes['LogoutResponse'],
+  ParentType extends
+    ResolversParentTypes['LogoutResponse'] = ResolversParentTypes['LogoutResponse'],
 > = {
   success?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
 };
 
 export type MutationResolvers<
   ContextType = GraphQLContext,
-  ParentType extends ResolversParentTypes['Mutation'] =
-    ResolversParentTypes['Mutation'],
+  ParentType extends
+    ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation'],
 > = {
   login?: Resolver<
     Maybe<ResolversTypes['LoginResponse']>,
@@ -386,8 +384,8 @@ export type MutationResolvers<
 
 export type QueryResolvers<
   ContextType = GraphQLContext,
-  ParentType extends ResolversParentTypes['Query'] =
-    ResolversParentTypes['Query'],
+  ParentType extends
+    ResolversParentTypes['Query'] = ResolversParentTypes['Query'],
 > = {
   me?: Resolver<Maybe<ResolversTypes['Customer']>, ParentType, ContextType>;
 };
